@@ -1,0 +1,7 @@
+{
+    "DFIntTaskSchedulerTargetFps": "60",
+    "DFIntDebugFRMQualityLevelOverride": "1",
+    "FFlagGlobalWindRendering": "False",
+    "FFlagGlobalWindActivated": "False",
+    "FIntRenderLocalLightFadeInMs": "0",
+}

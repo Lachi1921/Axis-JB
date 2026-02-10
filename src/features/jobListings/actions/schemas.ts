@@ -11,14 +11,22 @@ export const jobListingSchema = z.object({
     wageInterval: z.enum(wageIntervals,).nullable(),
     stateAbbreviation: z.string().transform(val => (val.trim() === "" ? null : val)).nullable(),
     city: z.string().transform(val => (val.trim() === "" ? null : val)).nullable()
-}).refine(fields => {
-    fields.locationRequirement === "remote" || fields.city != null
-}, {
-    message: "Required for non-remote jobs",
-    path: ["city"]
-}).refine(fields => {
-    fields.locationRequirement === "remote" || fields.stateAbbreviation != null
-}, {
-    message: "Required for non-remote jobs",
-    path: ["stateAbbreviation"]
-})
+}).refine(
+    listing => {
+        return listing.locationRequirement === "remote" || listing.city != null
+    },
+    {
+        message: "Required for non-remote listings",
+        path: ["city"],
+    }
+).refine(
+    listing => {
+        return (
+            listing.locationRequirement === "remote" || listing.stateAbbreviation != null
+        )
+    },
+    {
+        message: "Required for non-remote listings",
+        path: ["stateAbbreviation"],
+    }
+)

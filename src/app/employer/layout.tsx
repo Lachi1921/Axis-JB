@@ -14,8 +14,6 @@ export default function EmployerLayout({ children }: { children: ReactNode }) {
             <Suspense fallback={<div>Loading...</div>}>
                 <LayoutSuspense>{children}</LayoutSuspense>
             </Suspense>
-            <h1>Employer Layout</h1>
-            <p>{children}</p>
         </>
     )
 }

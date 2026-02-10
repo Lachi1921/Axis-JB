@@ -7,7 +7,7 @@ export function LoadingSwap({ isLoading, children, className }: { isLoading: boo
             {children}
         </div>
 
-        <div className={cn("col-start-1 col-end-1 row-start-1 row-end-1", isLoading ? "invisible" : "visible", className)}>
+        <div className={cn("col-start-1 col-end-1 row-start-1 row-end-1", isLoading ? "visible" : "invisible", className)}>
             <Loader2Icon className="animate-spin" />
         </div>
     </div>

@@ -12,6 +12,9 @@ import { formatExpierenceLevels, formatJobType, formatLocationRequirement, forma
 import { StateSelectItems } from "./StateSelectItems"
 import { MarkdownEditor } from "@/components/markdown/MarkdownEditor";
 import { Button } from "@/components/ui/button";
+import { createJobListing } from "../actions/actions";
+import { toast } from "sonner";
+import { LoadingSwap } from "@/components/LoadingSwap";
 
 export function JobListingForm() {
     const NONE_SELECT_VALUE = "None"
@@ -32,8 +35,11 @@ export function JobListingForm() {
     })
 
     async function onSubmit(data: z.infer<typeof jobListingSchema>) {
-        await new Promise(res => setTimeout(res, 1000))
-        console.log(data)
+        const res = await createJobListing(data)
+
+        if (res.error) {
+            toast.error(res.message)
+        }
     }
 
     return <Form {...form}>

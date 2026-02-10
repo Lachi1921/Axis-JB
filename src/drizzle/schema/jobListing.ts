@@ -31,7 +31,7 @@ export const JobListingTable = pgTable("job_listings", {
     description: text().notNull(),
     wage: integer(),
     wageInterval: wageIntervalEnum(),
-    stateAberviation: varchar(),
+    stateAbbreviation: varchar(),
     city: varchar(),
     isFeatured: boolean().notNull().default(false),
     locationRequirement: locationRequirementEnum().notNull(),
@@ -42,7 +42,7 @@ export const JobListingTable = pgTable("job_listings", {
     createdAt,
     updatedAt,
 
-}, table => [index().on(table.stateAberviation)])
+}, table => [index().on(table.stateAbbreviation)])
 
 
 export const joblistingReferences = relations(JobListingTable, ({ one, many }) => ({

@@ -9,7 +9,7 @@ export const MarkdownClassNames = "max-w-none prose prose-neutral dark:prose-inv
 export default function InternalMarkdownEditor({ ref, className, ...props }: MDXEditorProps & { ref: Ref<MDXEditorMethods> }) {
     const isDarkMode = useIsDarkMode()
 
-    return <MDXEditor {...props} ref={ref} className={cn(MarkdownClassNames, isDarkMode && "dark-theme", className)} suppressHtmlProcessing plugins={[
+    return <MDXEditor {...props} ref={ref} className={cn(MarkdownClassNames, isDarkMode && "dark-theme prose-invert", className)} suppressHtmlProcessing plugins={[
         headingsPlugin(),
         listsPlugin(),
         quotePlugin(),

@@ -4,15 +4,18 @@ import SidebarUserButton from "@/features/users/components/SidebarUserButton";
 import { BrainCogIcon, HomeIcon, LayoutDashboard, LogIn } from "lucide-react";
 import { ReactNode } from "react";
 
-export default function JobSeekerLayout({ children }: { children: ReactNode }) {
+export default function JobSeekerLayout({ children, sidebar }: { children: ReactNode, sidebar: ReactNode }) {
     return <AppSidebar
         content={
-            <SidebarNavMenuGroup className="mt-auto" items={[
-                { href: "/", icon: <HomeIcon />, label: "Home" },
-                { href: "ai-search/", icon: <BrainCogIcon />, label: "AI search" },
-                { href: "/employer", icon: <LayoutDashboard />, label: "Employer", authStatus: "signedIn" },
-                { href: "/sign-in", icon: <LogIn />, label: "Sign in", authStatus: "signedOut" },
-            ]} />
+            <>
+                {sidebar}
+                <SidebarNavMenuGroup className="mt-auto" items={[
+                    { href: "/", icon: <HomeIcon />, label: "Home" },
+                    { href: "ai-search/", icon: <BrainCogIcon />, label: "AI search" },
+                    { href: "/employer", icon: <LayoutDashboard />, label: "Employer", authStatus: "signedIn" },
+                    { href: "/sign-in", icon: <LogIn />, label: "Sign in", authStatus: "signedOut" },
+                ]} />
+            </>
         }
         footerButton={
             <SidebarUserButton />

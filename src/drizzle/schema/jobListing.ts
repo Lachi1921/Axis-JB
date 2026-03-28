@@ -9,7 +9,7 @@ export type WageInterval = typeof wageIntervals[number]
 export const wageIntervalEnum = pgEnum("job_listings_wage_interval", wageIntervals)
 
 export const locationRequirement = ["on-site", "hybrid", "remote"] as const
-export type locationRequirement = typeof locationRequirement[number]
+export type LocationRequirement = typeof locationRequirement[number]
 export const locationRequirementEnum = pgEnum("job_listings_location_req", locationRequirement)
 
 export const expierenceLevels = ["junior", "mid level", "senior"] as const

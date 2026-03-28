@@ -12,3 +12,7 @@ export function getOrganizationTag(tag: CacheTag, id: string) {
 export function getIdTag(tag: CacheTag, id: string) {
     return `id:${id}-${tag}` as const
 }
+
+export function getJobListingTag(tag: CacheTag, jobListingId: string) {
+    return `jobListing:${jobListingId}-${tag}` as const
+}

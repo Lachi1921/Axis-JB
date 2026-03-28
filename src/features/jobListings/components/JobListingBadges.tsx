@@ -25,8 +25,9 @@ export function JobListingBadges({ jobListing: {
 
     return <>
         {isFeatured && (
-            <Badge {...badgeProps} className={cn(className, "border-feature bg-featured/50 text-featured-foreground")}></Badge>
+            <Badge {...badgeProps} className={cn(className, "border-feature bg-featured/50 text-featured-foreground")}>Featured</Badge>
         )}
+
         {wage != null && wageInterval != null && (
             <Badge {...badgeProps}>
                 <BanknoteIcon />

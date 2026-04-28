@@ -7,7 +7,7 @@ A full-stack AI-powered job portal featuring automated applicant ranking, resume
 - **AI-Powered Resume Matching**: AI resume analysis and candidate scoring using Google Gemini AI
 - **Prompt-Based Job Search**: Advanced AI search functionality for finding relevant job opportunities
 - **Resume Summarization**: Automated resume processing and summarization
-- - **Role-Based Authentication**: Secure authentication and authorization using Clerk for employers and job seekers
+- **Role-Based Authentication**: Secure authentication and authorization using Clerk for employers and job seekers
 - **Job Listings Management**: Job posting and management system for employers
 - **File Uploads**: Secure resume and document uploads using Uploadthing
 - **Email Notifications**: Automated email notifications via Resend

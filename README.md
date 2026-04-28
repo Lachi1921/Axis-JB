@@ -1,6 +1,6 @@
-## Axis
+## AI-Powered Job Portal Platform
 
-A Next.js application built with `create-next-app`.
+Full-Stack Job Board with AI-Powered Resume Matching. Built with Next.js 14, Drizzle ORM, and TypeScript. Features include role-based auth, automated candidate scoring, resume summarization, AI search (Prompt-based job search), and AI cron jobs.
 
 ### Getting Started
 

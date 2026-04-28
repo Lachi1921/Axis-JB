@@ -1,13 +1,13 @@
 # Axis - AI-Powered Job Portal Platform
 
-A full-stack job board platform with AI-powered resume matching, automated candidate scoring, and AI job search capabilities. Built with Next.js 14, Drizzle ORM, and TypeScript.
+A full-stack AI-powered job portal featuring automated applicant ranking, resume summarization, prompt-based AI job search, and AI-driven cron jobs. Includes secure Clerk authentication, comprehensive CRUD operations for job listings and applications, an integrated pricing and billing system, and modern responsive design. Built with Next.js 14, Drizzle ORM, and TypeScript.
 
 ## Features
 
-- **Role-Based Authentication**: Secure authentication and authorization using Clerk for employers and job seekers
 - **AI-Powered Resume Matching**: AI resume analysis and candidate scoring using Google Gemini AI
 - **Prompt-Based Job Search**: Advanced AI search functionality for finding relevant job opportunities
 - **Resume Summarization**: Automated resume processing and summarization
+- - **Role-Based Authentication**: Secure authentication and authorization using Clerk for employers and job seekers
 - **Job Listings Management**: Job posting and management system for employers
 - **File Uploads**: Secure resume and document uploads using Uploadthing
 - **Email Notifications**: Automated email notifications via Resend

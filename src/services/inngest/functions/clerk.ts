@@ -5,6 +5,7 @@ import { NonRetriableError } from "inngest";
 import { deleteUser, insertUser, updateUser } from "@/features/users/db/user";
 import { insertUserNotificationSettings, updateUserNotificationSettings } from "@/features/users/db/userNotificationSettings";
 import { deleteOrg, insertOrg, updateOrg } from "@/features/organizations/organization";
+import { insertOrgUserSettings } from "@/features/organizations/db/organizationUserSettings";
 
 function verifyWebhook({
     raw,
@@ -86,11 +87,6 @@ export const clerkUpdateUser = inngest.createFunction(
             return userData.id
         })
 
-
-        await step.run('update-user-notification-settings', async () => {
-            await updateUserNotificationSettings({ userId })
-        })
-
     }
 )
 
@@ -105,7 +101,7 @@ export const clerkDeleteUser = inngest.createFunction(
                 throw new NonRetriableError(`Failed to verify webhook: ${error}`)
             }
         })
-        const userId = await step.run('update-user', async () => {
+        const userId = await step.run('delete-user', async () => {
             const { id } = event.data.data
 
             if (id === undefined) {
@@ -190,7 +186,7 @@ export const clerkDeleteOrganization = inngest.createFunction(
                 throw new NonRetriableError(`Failed to verify webhook: ${error}`)
             }
         })
-        await step.run('update-organization', async () => {
+        await step.run('delete-organization', async () => {
             const { id } = event.data.data
 
             if (id === undefined) {
@@ -204,3 +200,59 @@ export const clerkDeleteOrganization = inngest.createFunction(
 
     }
 )
+
+export const clerkCreateOrgMembership = inngest.createFunction(
+    { id: 'clerk/create-db-org-membership', name: 'Clerk - Create DB Org Membership' },
+    { event: 'clerk/orgMembership.created' },
+
+    async ({ event, step }) => {
+        await step.run('verify-webhook', async () => {
+            try {
+                verifyWebhook(event.data)
+            } catch (error) {
+                throw new NonRetriableError(`Failed to verify webhook: ${error}`)
+            }
+        })
+
+        await step.run('create-org-user-settings', async () => {
+            const userId = event.data.data.public_user_data.user_id
+            const orgId = event.data.data.organization.id
+
+            await insertOrgUserSettings({
+                userId,
+                organizationId: orgId,
+
+            })
+
+        })
+    }
+)
+
+export const clerkDeleteOrgMembership = inngest.createFunction(
+    { id: 'clerk/delete-db-org-membership', name: 'Clerk - Delete DB Org Membership' },
+    { event: 'clerk/orgMembership.deleted' },
+
+    async ({ event, step }) => {
+        await step.run('verify-webhook', async () => {
+            try {
+                verifyWebhook(event.data)
+            } catch (error) {
+                throw new NonRetriableError(`Failed to verify webhook: ${error}`)
+            }
+        })
+
+        await step.run('delete-org-user-settings', async () => {
+            const userId = event.data.data.public_user_data.user_id
+            const orgId = event.data.data.organization.id
+
+            await insertOrgUserSettings({
+                userId,
+                organizationId: orgId,
+
+            })
+
+        })
+    }
+)
+
+

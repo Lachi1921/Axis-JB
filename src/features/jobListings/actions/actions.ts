@@ -1,18 +1,19 @@
 "use server"
 
 import z from "zod";
-import { jobListingSchema } from "./schemas";
-import { getCurrentOrganization } from "@/services/clerk/lib/getCurrentAuth";
+import { jobListingAiSearchSchema, jobListingSchema } from "./schemas";
+import { getCurrentOrganization, getCurrentUser } from "@/services/clerk/lib/getCurrentAuth";
 import { redirect } from "next/navigation";
 import { insertJobListing, updateJobListing as updateJobListingDB, deleteJobListing as deleteJobListingDB } from "../db/jobListing";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { getJobListingIdTag } from "../db/cache/jobListings";
+import { getJobListingGlobalTag, getJobListingIdTag } from "../db/cache/jobListings";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/drizzle/db";
 import { JobListingTable } from "@/drizzle/schema";
 import { hasOrgUserPermission } from "@/services/clerk/lib/orgPermissions";
 import { getNextJobListingStatus } from './../lib/utils';
 import { hasReachedMaxFeaturedListings, hasReachedMaxJobListings } from "../lib/planFeaturesHelper";
+import { getMatchingJobListings } from "@/services/inngest/ai/getMatchingJobListings";
 
 export async function createJobListing(unsafeData: z.infer<typeof jobListingSchema>) {
     const FAILED_CREATING_ERROR_MESSAGE = "There was an error creating your job listing"
@@ -168,6 +169,42 @@ export async function toggleJobListingFeatured(id: string) {
     }
 }
 
+export async function getAiJobListingSearchResults(
+    unsafeData: z.infer<typeof jobListingAiSearchSchema>
+): Promise<{ error: true, message: string } | { error: false, jobIds: string[] }> {
+    const { success, data } = jobListingAiSearchSchema.safeParse(unsafeData)
+
+    if (!success) {
+        return {
+            error: true,
+            message: "An unexpected error occurred processing your search."
+        }
+    }
+
+    const { userId } = await getCurrentUser()
+
+    if (userId == null) {
+        return {
+            error: true,
+            message: "You need an account to use AI job search"
+        }
+    }
+
+    const listings = await getPublicJobListing()
+
+    const matchedListings = await getMatchingJobListings(data.query, listings, { max: 5 })
+
+    if (matchedListings.length === 0) {
+        return {
+            error: true,
+            message: "No jobs match your search criteria"
+        }
+    }
+
+    return { error: false, jobIds: matchedListings }
+
+}
+
 
 export async function deleteJobListing(id: string) {
     const FAILED_UPDATING_ERROR_MESSAGE = "There was an error deleting your job listing"
@@ -201,3 +238,10 @@ export async function deleteJobListing(id: string) {
 }
 
 
+async function getPublicJobListing() {
+    "use cache"
+    cacheTag(getJobListingGlobalTag())
+    return await db.query.JobListingTable.findMany({
+        where: eq(JobListingTable.status, "published"),
+    });
+}

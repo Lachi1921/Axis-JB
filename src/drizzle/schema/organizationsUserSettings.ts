@@ -1,4 +1,4 @@
-import { boolean, index, integer, pgEnum, pgTable, primaryKey, text, uuid, varchar } from "drizzle-orm/pg-core";
+import { boolean, integer, pgTable, primaryKey, varchar } from "drizzle-orm/pg-core";
 import { createdAt, updatedAt } from "../SchemeHelpers";
 import { UserTable } from "./user";
 import { OrganizationTable } from "./organizations";
@@ -18,11 +18,11 @@ export const OrganizationUserSettingsTable = pgTable("organization_user_settings
 )
 
 export const OrganizationUserSettingsReferences = relations(OrganizationUserSettingsTable, ({ one }) => ({
-  userId: one(UserTable, {
+  user: one(UserTable, {
     fields: [OrganizationUserSettingsTable.userId],
     references: [UserTable.id],
   }),
-  organizationId: one(OrganizationTable, {
+  organization: one(OrganizationTable, {
     fields: [OrganizationUserSettingsTable.organizationId],
     references: [OrganizationTable.id]
   })

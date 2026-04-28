@@ -19,7 +19,7 @@ import { JobListingTable } from "@/drizzle/schema"
 
 
 export function JobListingForm({ jobListing }: {
-    jobListing: Pick<typeof JobListingTable.$inferSelect,
+    jobListing?: Pick<typeof JobListingTable.$inferSelect,
         "title" |
         "description" |
         "expierenceLevel" |

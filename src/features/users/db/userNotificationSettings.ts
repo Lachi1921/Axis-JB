@@ -6,8 +6,11 @@ export async function insertUserNotificationSettings(settings: typeof UserNotifi
     await db.insert(UserNotificationsSettingsTable).values(settings).onConflictDoNothing();
     revalidateUserNotificationSettingsCache(settings.userId)
 }
-export async function updateUserNotificationSettings(settings: typeof UserNotificationsSettingsTable.$inferInsert) {
-    await db.update(UserNotificationsSettingsTable).set(settings);
-    revalidateUserNotificationSettingsCache(settings.userId)
+export async function updateUserNotificationSettings(userId: string, settings: Partial<Omit<typeof UserNotificationsSettingsTable.$inferInsert, "userId">>) {
+    await db.insert(UserNotificationsSettingsTable).values({ ...settings, userId }).onConflictDoUpdate({
+        target: UserNotificationsSettingsTable.userId,
+        set: settings,
+    });
+    revalidateUserNotificationSettingsCache(userId)
 
 }

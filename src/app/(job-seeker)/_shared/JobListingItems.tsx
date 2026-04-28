@@ -8,13 +8,14 @@ import { convertSearchParamsToString } from '@/lib/convertSearchParamsToString';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { differenceInDays } from 'date-fns';
-import { connection } from 'next/server';
-import { Badge } from '@/components/ui/badge';
 import { JobListingBadges } from '@/features/jobListings/components/JobListingBadges';
 import z from 'zod';
 import { cacheTag } from 'next/dist/server/use-cache/cache-tag';
 import { getJobListingGlobalTag } from '@/features/jobListings/db/cache/jobListings';
+import { getOrganizationIdTag } from '@/features/organizations/db/cache/organizations';
+import { connection } from 'next/server';
+import { differenceInDays } from 'date-fns';
+import { Badge } from '@/components/ui/badge';
 
 type Props = {
     searchParams: Promise<Record<string, string | string[]>>
@@ -75,7 +76,7 @@ function JobListingListItem({ jobListing, organization }: {
                 <CardTitle className='text-xl'>{jobListing.title}</CardTitle>
                 <CardDescription className='text-base text-muted-foreground'>{organization?.name}</CardDescription>
                 {jobListing.postedAt != null &&
-                    <div className="text-sm font-medium text-primmary @min-md:hidden">
+                    <div className="text-sm font-medium text-primary @min-md:hidden">
                         <Suspense fallback={jobListing.postedAt.toLocaleDateString()}>
                             <DaysSincePosted postedAt={jobListing.postedAt} />
                         </Suspense>
@@ -83,7 +84,7 @@ function JobListingListItem({ jobListing, organization }: {
                 }
             </div>
             {jobListing.postedAt != null &&
-                <div className="text-sm font-medium text-primmary ml-auto @max-md:hidden">
+                <div className="text-sm font-medium text-primary ml-auto @max-md:hidden">
                     <Suspense fallback={jobListing.postedAt.toLocaleDateString()}>
                         <DaysSincePosted postedAt={jobListing.postedAt} />
                     </Suspense>
@@ -96,13 +97,12 @@ function JobListingListItem({ jobListing, organization }: {
     </Card>
 }
 
-
 async function DaysSincePosted({ postedAt }: { postedAt: Date }) {
     await connection()
-    const daysSincePosted = differenceInDays(postedAt, Date.now())
+    const daysSincePosted = differenceInDays(Date.now(), postedAt)
 
     if (daysSincePosted === 0) {
-        return <Badge>Today</Badge>
+        return <Badge>Today </Badge>
     }
 
     return new Intl.RelativeTimeFormat(undefined, { style: "narrow", numeric: "always" }).format(daysSincePosted, "day")
@@ -137,11 +137,12 @@ async function getAllJobListings(searchParams: z.infer<typeof searchParamsSchema
     }
 
 
-    return db.query.JobListingTable.findMany({
+    const data = await db.query.JobListingTable.findMany({
         where: or(jobListingId ? and(eq(JobListingTable.status, "published"), eq(JobListingTable.id, jobListingId)) : undefined, and(eq(JobListingTable.status, "published"), ...whereConditions)),
         with: {
             organizations: {
                 columns: {
+                    id: true,
                     name: true,
                     imageUrl: true,
                 }
@@ -150,4 +151,9 @@ async function getAllJobListings(searchParams: z.infer<typeof searchParamsSchema
         orderBy: [desc(JobListingTable.isFeatured), desc(JobListingTable.postedAt)],
     })
 
+    data.forEach((listing) => {
+        cacheTag(getOrganizationIdTag(listing.organizations.id))
+    })
+
+    return data
 }

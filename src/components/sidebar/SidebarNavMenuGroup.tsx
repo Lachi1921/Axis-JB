@@ -16,10 +16,10 @@ export function SidebarNavMenuGroup({
     className,
 }: {
     items: {
-        href: string
-        icon: ReactNode
-        label: string
-        authStatus?: "signedOut" | "signedIn"
+        href: string,
+        icon: ReactNode,
+        label: string,
+        authStatus?: "signedOut" | "signedIn",
     }[]
     className?: string
 }) {

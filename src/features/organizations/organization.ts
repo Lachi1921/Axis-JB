@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { eq } from "drizzle-orm";
-import { OrganizationTable } from "@/drizzle/schema";
+import { OrganizationTable, OrganizationUserSettingsTable } from "@/drizzle/schema";
 import { revalidateOrganizationCache } from "./db/cache/organizations";
 
 export async function insertOrg(org: typeof OrganizationTable.$inferInsert) {
@@ -18,3 +18,4 @@ export async function deleteOrg(id: string) {
     await db.delete(OrganizationTable).where(eq(OrganizationTable.id, id));
     revalidateOrganizationCache(id)
 }
+

@@ -1,4 +1,4 @@
-import { ExpierenceLevel, JobListingStatuses, JobType, locationRequirement, WageInterval } from "@/drizzle/schema";
+import { ExpierenceLevel, JobListingStatuses, JobType, LocationRequirement, locationRequirement, WageInterval } from "@/drizzle/schema";
 
 export function formatWageInterval(interval: WageInterval) {
     switch (interval) {
@@ -14,7 +14,7 @@ export function formatWageInterval(interval: WageInterval) {
 }
 
 
-export function formatLocationRequirement(lr: locationRequirement) {
+export function formatLocationRequirement(lr: LocationRequirement) {
     switch (lr) {
         case "on-site":
             return "In office"

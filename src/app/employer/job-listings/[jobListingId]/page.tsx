@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { db } from "@/drizzle/db";
-import { JobListingStatuses, JobListingTable } from "@/drizzle/schema";
+import { jobListingApplicationsTable, JobListingStatuses, JobListingTable } from "@/drizzle/schema";
 import { JobListingBadges } from "@/features/jobListings/components/JobListingBadges";
 import { getJobListingIdTag } from "@/features/jobListings/db/cache/jobListings";
 import { formatJobListingStatus } from "@/features/jobListings/lib/formatters";
@@ -22,6 +22,11 @@ import { notFound } from "next/navigation";
 import { ReactNode, Suspense } from "react";
 import { toggleJobListingFeatured, toggleJobListingStatus } from "@/features/jobListings/actions/actions";
 import { deleteJobListing } from "@/features/jobListings/actions/actions";
+import { Separator } from '@/components/ui/separator';
+import { getJobListingApplicationJobListingTag } from "@/features/jobListingsApplication/db/cache/jobListingApplications";
+import { getUserIdTag } from "@/features/users/db/cache/users";
+import { getUserResumeIdTag } from "@/features/users/db/cache/userResume";
+import { ApplicationTable, SkeletonApplicationTable } from "@/features/jobListingsApplication/components/ApplicationTable";
 
 type Props = {
     params: Promise<{ jobListingId: string }>
@@ -75,7 +80,17 @@ async function SuspendedPage({ params }: Props) {
             mainMarkdown={<MarkdownRenderer className="prose-sm" source={jobListing.description} />}
             dialogTitle="Description"
         />
+
+        <Separator />
+
+        <div className="space-y-6 ">
+            <h2 className="text-xl font-semibold ">Applications submitted</h2>
+            <Suspense fallback={<SkeletonApplicationTable />}>
+                <Applications jobListingId={jobListingId} />
+            </Suspense>
+        </div>
     </div>
+
 }
 
 function StatusUpdateButton({ status, id }: { status: JobListingStatuses, id: string }) {
@@ -215,4 +230,67 @@ function featureToggleButtonText(isFeatured: boolean) {
             </>
         )
     }
+}
+
+async function Applications({ jobListingId }: { jobListingId: string }) {
+    const applications = await getJobListingApplications(jobListingId)
+
+    return <ApplicationTable applications={applications.map(a => ({
+        ...a,
+        user: {
+            ...a.user,
+            userResumes: a.user.userResumes
+                ? {
+                    ...a.user.userResumes,
+                    markdownSummary: a.user.userResumes.aiSummary ? (
+                        <MarkdownRenderer source={a.user.userResumes.aiSummary} />
+                    ) : null,
+                }
+                : null,
+        },
+        coverLetterMarkdown: a.coverLetter ? (
+            <MarkdownRenderer source={a.coverLetter} />
+        ) : null,
+    }))} canUpdateRating={await hasOrgUserPermission("org:job_listing_applications:change_rating")} canUpdateStage={await hasOrgUserPermission("org:job_listing_applications:change_stage")} />
+}
+
+async function getJobListingApplications(jobListingId: string) {
+    "use cache"
+    cacheTag(getJobListingApplicationJobListingTag(jobListingId))
+
+    const data = await db.query.jobListingApplicationsTable.findMany({
+        where: eq(jobListingApplicationsTable.jobListingId, jobListingId),
+        columns: {
+            coverLetter: true,
+            createdAt: true,
+            stage: true,
+            rating: true,
+            jobListingId: true,
+        },
+        with: {
+            user: {
+                columns: {
+                    id: true,
+                    name: true,
+                    imageUrl: true,
+                },
+                with: {
+                    userResumes: {
+                        columns: {
+                            resumeFileUrl: true,
+                            aiSummary: true,
+                        },
+                    },
+                },
+            },
+        },
+    })
+
+    data.forEach(({ user }) => {
+        cacheTag(getUserIdTag(user.id))
+        cacheTag(getUserResumeIdTag(user.id))
+    })
+
+    return data
+
 }

@@ -1,4 +1,4 @@
-import { index, integer, pgEnum, pgTable, primaryKey, text, uuid, varchar } from "drizzle-orm/pg-core";
+import { integer, pgEnum, pgTable, primaryKey, text, uuid, varchar } from "drizzle-orm/pg-core";
 import { createdAt, updatedAt } from "../SchemeHelpers";
 import { JobListingTable } from "./jobListing";
 import { UserTable } from "./user";
@@ -27,7 +27,7 @@ export const jobListingApplicationsReferences = relations(jobListingApplications
         fields: [jobListingApplicationsTable.jobListingId],
         references: [JobListingTable.id],
     }),
-    userId: one(UserTable, {
+    user: one(UserTable, {
         fields: [jobListingApplicationsTable.userId],
         references: [UserTable.id],
     }),

@@ -30,3 +30,7 @@ export const jobListingSchema = z.object({
         path: ["stateAbbreviation"],
     }
 )
+
+export const jobListingAiSearchSchema = z.object({
+    query: z.string().min(1, "Required")
+})

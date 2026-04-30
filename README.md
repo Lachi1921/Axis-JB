@@ -1,29 +1,25 @@
 # AXIS - AI-Powered Job Portal Platform
 
-A full-stack AI-powered job portal featuring automated applicant ranking, resume summarization, prompt-based AI job search, and AI-driven cron jobs. Includes secure Clerk authentication, comprehensive CRUD operations for job listings and applications, an integrated pricing and billing system, and modern responsive design. Built with Next.js 14, Drizzle ORM, and TypeScript.
+A full-stack AI-powered job portal featuring automated applicant ranking, resume summarization, prompt-based AI job search, and AI-driven cron jobs. Includes secure Clerk authentication, all CRUD operations for job listings and applications, integrated pricing and billing system, and a modern responsive design. Built with Next.js 14, Drizzle ORM, and TypeScript.
 
 ## Features
 
-- **AI-Powered Resume Matching**: AI resume analysis and candidate scoring using Google Gemini AI
-- **Prompt-Based Job Search**: Advanced AI search functionality for finding relevant job opportunities
-- **Resume Summarization**: Automated resume processing and summarization
-- **Role-Based Authentication**: Secure authentication and authorization using Clerk for employers and job seekers
-- **Job Listings Management**: Job posting and management system for employers
-- **File Uploads**: Secure resume and document uploads using Uploadthing
-- **Email Notifications**: Automated email notifications via Resend
-- **Background Jobs**: Asynchronous processing with Inngest for cron jobs and workflows
-- **Responsive Design**: Modern UI built with Tailwind CSS and ShadCN
-- **Database Management**: PostgreSQL database with Drizzle ORM and migrations
+- AI-Powered Resume Matching: AI resume analysis and candidate scoring using Google Gemini AI
+- Prompt-Based Job Search: Advanced AI search functionality for finding relevant job opportunities based on your prompt.
+- Resume Summarization: Automated resume processing and summarization
+- Role-Based Authentication: Secure authentication and authorization using Clerk for employers and job seekers
+- Job Listings Management: Job posting and management system for employers
+- File Uploads: Secure resume and document uploads using Uploadthing
+- Email Notifications: Automated email notifications via Resend
+- Background Jobs: Asynchronous processing with Inngest for cron jobs.
+- Responsive Design: Modern UI built with Tailwind CSS and ShadCN.
+- Database Management: PostgreSQL database with docker and using Drizzle ORM.
 
 ## Tech Stack
 
-- **Frontend**: Next.js 14, TypeScript
-- **Authentication**: Clerk
-- **Database**: PostgreSQL with Drizzle ORM
-- **AI/ML**: Google Gemini API
-- **File Storage**: Uploadthing
-- **Email**: Resend
-- **Background Jobs**: Inngest
+- Frontend: Next.js 14, TypeScript, Tailwind, ShadCN
+- Database: PostgreSQL with Drizzle ORM
+- AI/ML: Google Gemini API
 
 ## Installation
 
